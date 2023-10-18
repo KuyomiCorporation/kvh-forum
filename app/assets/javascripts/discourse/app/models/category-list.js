@@ -1,23 +1,56 @@
 import ArrayProxy from "@ember/array/proxy";
-import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
 import { number } from "discourse/lib/formatter";
 import PreloadStore from "discourse/lib/preload-store";
 import Category from "discourse/models/category";
 import Site from "discourse/models/site";
 import Topic from "discourse/models/topic";
+import { bind } from "discourse-common/utils/decorators";
 import I18n from "discourse-i18n";
+
+const MAX_CATEGORIES_LIMIT = 25;
 
 const CategoryList = ArrayProxy.extend({
   init() {
-    this.set("content", []);
     this._super(...arguments);
+    this.set("content", []);
+    this.set("page", 1);
+  },
+
+  @bind
+  async loadMore() {
+    if (this.isLoading || this.lastPage) {
+      return;
+    }
+
+    this.set("isLoading", true);
+
+    const data = { page: this.page + 1, limit: MAX_CATEGORIES_LIMIT };
+    if (this.parentCategory) {
+      data.parent_category_id = this.parentCategory.id;
+    }
+    const result = await ajax("/categories.json", { data });
+    this.set("page", data.page);
+
+    result.category_list.categories.forEach((c) => {
+      const record = Site.current().updateCategory(c);
+      this.categories.pushObject(record);
+    });
+
+    this.set("isLoading", false);
+
+    if (result.category_list.categories.length < MAX_CATEGORIES_LIMIT) {
+      this.set("lastPage", true);
+    }
+
+    const newCategoryList = CategoryList.categoriesFrom(this.store, result);
+    this.categories.pushObjects(newCategoryList.categories);
   },
 });
 
 CategoryList.reopenClass({
   categoriesFrom(store, result) {
-    const categories = CategoryList.create();
+    const categories = CategoryList.create({ store });
     const list = Category.list();
 
     let statPeriod = "all";
@@ -54,6 +87,9 @@ CategoryList.reopenClass({
         list.findBy("id", parseInt(scid, 10))
       );
     }
+
+    // TODO: Not all subcategory_ids have been loaded
+    c.subcategories = c.subcategories?.filter(Boolean);
 
     if (c.topics) {
       c.topics = c.topics.map((t) => Topic.create(t));
@@ -99,7 +135,8 @@ CategoryList.reopenClass({
     return ajax(
       `/categories.json?parent_category_id=${category.get("id")}`
     ).then((result) => {
-      return EmberObject.create({
+      return CategoryList.create({
+        store,
         categories: this.categoriesFrom(store, result),
         parentCategory: category,
       });
@@ -111,6 +148,7 @@ CategoryList.reopenClass({
     return PreloadStore.getAndRemove("categories_list", getCategories).then(
       (result) => {
         return CategoryList.create({
+          store,
           categories: this.categoriesFrom(store, result),
           can_create_category: result.category_list.can_create_category,
           can_create_topic: result.category_list.can_create_topic,
