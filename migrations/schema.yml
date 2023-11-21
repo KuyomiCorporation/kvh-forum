@@ -1,0 +1,45 @@
+tables:
+  exclude:
+  include:
+    - name: users
+      exclude_columns:
+        - password_algorithm
+        - username_lower
+        - password_hash
+        - salt
+        - seen_notification_id
+        - last_posted_at
+        - last_emailed_at
+        - previous_visit_at
+        - suspended_at
+        - suspended_till
+        - views
+        - flag_level
+        - ip_address
+        - title
+        - first_seen_at
+        - silenced_till
+        - silenced_till
+        - group_locked_trust_level
+        - manual_locked_trust_level
+        - primary_group_id
+        - secure_identifier
+        - flair_group_id
+        - last_seen_reviewable_id
+        - uploaded_avatar_id
+        - active
+      extend:
+        - name: bio
+          type: text
+        - name: email
+          type: text
+        - name: password
+          type: text
+      rename:
+    - name: tags
+    - name: topics
+    - name: categories
+    - mame: groups
+columns:
+  exclude:
+    - updated_at
