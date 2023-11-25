@@ -1,0 +1,132 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+puts "Loading application..."
+require_relative "../../config/environment"
+
+module Migrations
+  class GenerateSchema
+    def initialize(opts = {})
+      config = YAML.load_file(File.join(__dir__, "schema.yml"))
+
+      @connection = ActiveRecord::Base.connection
+      @output_stream = StringIO.new
+
+      @output_directory = config["output_directory"]
+      @output_filename = config["output_filename"]
+
+      @table_configs = config["tables"]
+      @column_configs = config["columns"]
+    end
+
+    def self.run
+      puts "Generating base migration schema for Discourse #{Discourse::VERSION::STRING}"
+
+      self.new.run
+    end
+
+    def run
+      header
+      tables
+      save
+    end
+
+    private
+
+    def header
+      @output_stream.puts <<~HEADER
+        /*
+         This file is auto-generated from the current state of the Discourse core database. Instead
+         of editing this file, please update the migrations `schema.yml` config and re-run the
+         `generate_schema` script to update this file
+        */
+      HEADER
+    end
+
+    def tables
+      table_list.each { |name| table(name) }
+    end
+
+    class CustomColumn
+      attr_reader :name, :type, :null
+
+      def initialize(name, type, null)
+        @name = name
+        @type = type&.to_sym || :text
+        @null = null.nil? ? true : null
+      end
+    end
+
+    def columns(name)
+      columns = @connection.columns(name) + column_extensions(name)
+    end
+
+    def column_extensions(name)
+      extensions = @table_configs.dig(name, "extend")
+
+      return [] if extensions.nil?
+
+      extensions.map { |column| CustomColumn.new(column["name"], column["type"], column["null"]) }
+    end
+
+    def type(column)
+      case column.type
+      when :string, :inet
+        "TEXT"
+      else
+        column.type.upcase
+      end
+    end
+
+    def global_column_skip_list
+      @column_configs["ignore"] || []
+    end
+
+    def column_skip_list(table_name)
+      @table_configs.dig(table_name, "ignore") || []
+    end
+
+    def indexes(table_name)
+      @table_configs.dig(table_name, "indexes") || []
+    end
+
+    def table(name)
+      column_skip_list = global_column_skip_list + column_skip_list(name)
+
+      @output_stream.puts ""
+      @output_stream.puts "CREATE TABLE #{name} ("
+
+      columns(name).each do |column|
+        next if column_skip_list.include?(column.name)
+
+        @output_stream.print " #{column.name} #{type(column)}"
+        @output_stream.print " NOT NULL" unless column.null
+        @output_stream.puts ","
+      end
+
+      @output_stream.seek(@output_stream.pos - 2) # Remove last trailing comma
+      @output_stream.puts "\n);"
+
+      @output_stream.puts "" if indexes(name).present?
+      indexes(name).each do |index|
+        index_name = index["name"]
+        column_list = index["columns"].join(" ,")
+        unique = index["unique"] ? "UNIQUE" : nil
+
+        @output_stream.puts "CREATE #{unique} INDEX #{index_name} ON #{name} (#{column_list});"
+      end
+    end
+
+    def table_list
+      @table_names ||= @table_configs&.keys
+      @table_list ||= @connection.tables.sort.select { |t| @table_names.include?(t) }
+    end
+
+    def save
+      output_filename = File.join(__dir__, @output_directory, @output_filename)
+      File.open(output_filename, "w") { |f| f << @output_stream.string }
+    end
+  end
+end
+
+Migrations::GenerateSchema.run

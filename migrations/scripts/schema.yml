@@ -1,0 +1,47 @@
+## Configuration options for the base intermediate schema generator
+##
+## After modifying this file, regenerate the base intermediate schema
+## by running the `generate_schema` script
+
+output_directory: ../common/intermediate_db_schema
+output_filename: 000_base_schema.sql
+
+## Tables to include in the generated base intermidate schema.
+##
+## Available table options:
+## ignore:      List of columns to ingore
+## primary_key: Literal or list of columns to use as primary
+## extend:      A list of objects describing new columns to added. Add a new column
+##              or transform an existing one
+## indexes:     List of indexes to create
+tables:
+  users:
+    primary_key: email
+    ignore:
+      - password_algorithm
+      - username_lower
+    extend:
+      - name: bio
+        type: text
+      - name: email
+        type: text
+      - name: password
+        type: text
+        "null": false
+    indexes:
+      - name: idx_username
+        unique: true
+        columns: [username]
+        condition:
+  tags: {}
+  topics: {}
+  categories: {}
+  groups: {}
+## Schema-wide column configuration options. These options apply to all tables.
+## See table specific column configuration options above.
+##
+## Available Options:
+## ignore:  List of core/plugin?? table columns to ignore and exclude from intermidate schema.
+columns:
+  ignore:
+    - updated_at
