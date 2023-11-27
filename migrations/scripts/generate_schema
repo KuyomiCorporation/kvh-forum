@@ -35,16 +35,88 @@ module Migrations
 
     def header
       @output_stream.puts <<~HEADER
-        /*
-         This file is auto-generated from the current state of the Discourse core database. Instead
-         of editing this file, please update the migrations `schema.yml` config and re-run the
-         `generate_schema` script to update this file
+         /*
+         This file is auto-generated from the current state of the Discourse core database schema. Instead
+         of editing it directly, please update the `schema.yml` configuration file and re-run the
+         `generate_schema` script to update it.
         */
       HEADER
     end
 
     def tables
-      table_list.each { |name| table(name) }
+      puts "Generating tables..."
+
+      core_tables_list = @connection.tables
+      configured_table_names.each do |name|
+        # TODO: Handle intermediate db-only tables. Tables not in core but required for
+        # the base itermediate db schema
+        raise "Core table named '#{name}' not found" if core_tables_list.exclude?(name)
+
+        table(name)
+      end
+    end
+
+    def generate_column(column)
+      @output_stream.print "  #{column.name} #{type(column)}"
+      @output_stream.print " NOT NULL" unless column.null
+      @output_stream.puts ","
+    end
+
+    def generate_index(table_name, index)
+      index_name = index["name"]
+      column_list = index["columns"].join(" ,")
+      unique = index["unique"] ? "UNIQUE" : nil
+
+      @output_stream.puts "CREATE #{unique} INDEX #{index_name} ON #{table_name} (#{column_list});"
+    end
+
+    def table(name)
+      puts "Generating #{name}..."
+
+      column_records = columns(name)
+      column_ignore_list = global_column_ignore_list + column_ignore_list_for(name)
+      indexes = indexes(name) # TODO: Allow core indexes to moved/ignored???'
+      configured_primary_key = primary_key(name)
+
+      primary_key, composite_key =
+        if configured_primary_key.present?
+          [configured_primary_key].flatten.each do |pk|
+            if column_records.map(&:name).exclude?(pk)
+              raise "Column named '#{pk}' does not exist in table '#{name}'"
+            end
+          end
+
+          [configured_primary_key, configured_primary_key.is_a?(Array) && configured_primary_key.length > 1]
+        else
+          [@connection.primary_key(name), false]
+        end
+
+      @output_stream.puts ""
+      @output_stream.puts "CREATE TABLE #{name} ("
+
+      unless composite_key
+        primary_key_column = column_records.find { |c| c.name == primary_key }
+
+        @output_stream.puts "  #{primary_key_column.name} #{type(primary_key_column)} NOT NULL PRIMARY KEY,"
+      end
+
+      column_records.each do |column|
+        next if column_ignore_list.include?(column.name)
+        next if !composite_key && (column.name == primary_key)
+
+        generate_column(column)
+      end
+
+      if composite_key
+        @output_stream.puts "  PRIMARY KEY (#{primary_key.join(", ")}),"
+      end
+
+      @output_stream.seek(@output_stream.pos - 2) # Remove last new line & trailing comma
+      @output_stream.puts "\n);"
+
+      @output_stream.puts "" if indexes.present?
+
+      indexes.each { |index| generate_index(name, index) }
     end
 
     class CustomColumn
@@ -78,11 +150,11 @@ module Migrations
       end
     end
 
-    def global_column_skip_list
+    def global_column_ignore_list
       @column_configs["ignore"] || []
     end
 
-    def column_skip_list(table_name)
+    def column_ignore_list_for(table_name)
       @table_configs.dig(table_name, "ignore") || []
     end
 
@@ -90,36 +162,12 @@ module Migrations
       @table_configs.dig(table_name, "indexes") || []
     end
 
-    def table(name)
-      column_skip_list = global_column_skip_list + column_skip_list(name)
-
-      @output_stream.puts ""
-      @output_stream.puts "CREATE TABLE #{name} ("
-
-      columns(name).each do |column|
-        next if column_skip_list.include?(column.name)
-
-        @output_stream.print " #{column.name} #{type(column)}"
-        @output_stream.print " NOT NULL" unless column.null
-        @output_stream.puts ","
-      end
-
-      @output_stream.seek(@output_stream.pos - 2) # Remove last trailing comma
-      @output_stream.puts "\n);"
-
-      @output_stream.puts "" if indexes(name).present?
-      indexes(name).each do |index|
-        index_name = index["name"]
-        column_list = index["columns"].join(" ,")
-        unique = index["unique"] ? "UNIQUE" : nil
-
-        @output_stream.puts "CREATE #{unique} INDEX #{index_name} ON #{name} (#{column_list});"
-      end
+    def primary_key(table_name)
+      @table_configs.dig(table_name, "primary_key")
     end
 
-    def table_list
-      @table_names ||= @table_configs&.keys
-      @table_list ||= @connection.tables.sort.select { |t| @table_names.include?(t) }
+    def configured_table_names
+      @configured_table_names ||= @table_configs&.keys&.sort || []
     end
 
     def save

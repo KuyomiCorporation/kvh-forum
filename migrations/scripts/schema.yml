@@ -16,10 +16,11 @@ output_filename: 000_base_schema.sql
 ## indexes:     List of indexes to create
 tables:
   users:
-    primary_key: email
+    primary_key: [email, username]
     ignore:
       - password_algorithm
       - username_lower
+      - id
     extend:
       - name: bio
         type: text
@@ -37,6 +38,9 @@ tables:
   topics: {}
   categories: {}
   groups: {}
+  posts: {}
+  badges: {}
+  uploads: {}
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##
