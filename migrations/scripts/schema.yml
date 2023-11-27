@@ -41,6 +41,16 @@ tables:
   posts: {}
   badges: {}
   uploads: {}
+  group_members:
+    virtual: true
+    primary_key: [group_id, user_id]
+    extend:
+      - name: group_id
+        type: integer
+      - name: user_id
+        type: integer
+      - name: owner
+        type: boolean
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

@@ -23,6 +23,8 @@ module Migrations
       puts "Generating base migration schema for Discourse #{Discourse::VERSION::STRING}"
 
       self.new.run
+
+      puts "", "Done"
     end
 
     def run
@@ -46,11 +48,8 @@ module Migrations
     def tables
       puts "Generating tables..."
 
-      core_tables_list = @connection.tables
       configured_table_names.each do |name|
-        # TODO: Handle intermediate db-only tables. Tables not in core but required for
-        # the base itermediate db schema
-        raise "Core table named '#{name}' not found" if core_tables_list.exclude?(name)
+        raise "Core table named '#{name}' not found" unless valid_table?(name)
 
         table(name)
       end
@@ -86,7 +85,10 @@ module Migrations
             end
           end
 
-          [configured_primary_key, configured_primary_key.is_a?(Array) && configured_primary_key.length > 1]
+          [
+            configured_primary_key,
+            configured_primary_key.is_a?(Array) && configured_primary_key.length > 1,
+          ]
         else
           [@connection.primary_key(name), false]
         end
@@ -107,9 +109,7 @@ module Migrations
         generate_column(column)
       end
 
-      if composite_key
-        @output_stream.puts "  PRIMARY KEY (#{primary_key.join(", ")}),"
-      end
+      @output_stream.puts "  PRIMARY KEY (#{primary_key.join(", ")})," if composite_key
 
       @output_stream.seek(@output_stream.pos - 2) # Remove last new line & trailing comma
       @output_stream.puts "\n);"
@@ -130,7 +130,11 @@ module Migrations
     end
 
     def columns(name)
-      columns = @connection.columns(name) + column_extensions(name)
+      if virtual_table?(name)
+        column_extensions(name)
+      else
+        @connection.columns(name) + column_extensions(name)
+      end
     end
 
     def column_extensions(name)
@@ -148,6 +152,14 @@ module Migrations
       else
         column.type.upcase
       end
+    end
+
+    def valid_table?(name)
+      @connection.tables.include?(name) || virtual_table?(name)
+    end
+
+    def virtual_table?(name)
+      !!@table_configs.dig(name, "virtual")
     end
 
     def global_column_ignore_list
@@ -171,6 +183,8 @@ module Migrations
     end
 
     def save
+      puts "Generating base schema file..."
+
       output_filename = File.join(__dir__, @output_directory, @output_filename)
       File.open(output_filename, "w") { |f| f << @output_stream.string }
     end
