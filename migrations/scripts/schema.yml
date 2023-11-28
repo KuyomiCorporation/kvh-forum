@@ -29,6 +29,9 @@ tables:
       - name: password
         type: text
         "null": false
+      - name: trust_level
+        type: date
+        "null": true
     indexes:
       - name: idx_username
         unique: true

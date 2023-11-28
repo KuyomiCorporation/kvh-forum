@@ -298,7 +298,7 @@ CREATE TABLE users (
   last_seen_at DATETIME,
   admin BOOLEAN NOT NULL,
   last_emailed_at DATETIME,
-  trust_level INTEGER NOT NULL,
+  trust_level DATE,
   approved BOOLEAN NOT NULL,
   approved_by_id INTEGER,
   approved_at DATETIME,

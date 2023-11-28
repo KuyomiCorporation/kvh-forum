@@ -120,21 +120,53 @@ module Migrations
     end
 
     class CustomColumn
-      attr_reader :name, :type, :null
+      attr_reader :name
 
       def initialize(name, type, null)
         @name = name
-        @type = type&.to_sym || :text
-        @null = null.nil? ? true : null
+        @raw_type = type
+        @raw_null = null
+      end
+
+      def type
+        @raw_type&.to_sym || :text
+      end
+
+      def null
+        @raw_null.nil? ? true : @raw_null
+      end
+
+      def merge!(other_column)
+        @raw_null ||= other_column.null
+        @raw_type ||= other_column.type
+
+        self
       end
     end
 
     def columns(name)
-      if virtual_table?(name)
-        column_extensions(name)
-      else
-        @connection.columns(name) + column_extensions(name)
-      end
+      extensions = column_extensions(name)
+
+      return extensions if virtual_table?(name)
+
+      default_columns = @connection.columns(name)
+
+      return default_columns if extensions.blank?
+
+      extended_columns =
+        default_columns.map do |default_column|
+          extension = extensions.find { |ext| ext.name == default_column.name }
+
+          if extension
+            extensions.delete(extension)
+
+            extension.merge!(default_column)
+          else
+            default_column
+          end
+        end
+
+      extended_columns + extensions
     end
 
     def column_extensions(name)
