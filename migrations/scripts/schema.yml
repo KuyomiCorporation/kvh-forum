@@ -72,7 +72,63 @@ tables:
         type: integer
       - name: email_digests
         type: boolean
-  # categories: {}
+  categories:
+    ignore:
+      - topic_id
+      - topic_count
+      - user_id
+      - topics_year
+      - topics_month
+      - topics_week
+      - auto_close_hours
+      - post_count
+      - latest_post_id
+      - latest_topic_id
+      - posts_year
+      - posts_month
+      - posts_week
+      - email_in
+      - email_in_allow_strangers
+      - topics_day
+      - posts_day
+      - allow_badges
+      - name_lower
+      - auto_close_based_on_last_post
+      - topic_template
+      - contains_messages
+      - sort_order
+      - sort_ascending
+      - uploaded_logo_id
+      - uploaded_background_id
+      - topic_featured_link_allowed
+      - all_topics_wiki
+      - show_subcategory_list
+      - num_featured_topics
+      - default_view
+      - subcategory_list_style
+      - default_top_period
+      - mailinglist_mirror
+      - minimum_required_tags
+      - navigate_to_first_post_after_read
+      - search_priority
+      - allow_global_tags
+      - reviewable_by_group_id
+      - read_only_banner
+      - default_list_filter
+      - allow_unlimited_owner_edits_on_first_post
+      - default_slow_mode_seconds
+      - uploaded_logo_dark_id
+      - uploaded_background_dark_id
+    extend:
+      - name: about_topic_title
+      - name: old_relative_url
+      - name: existing_id
+        type: integer
+      - name: permissions
+        type: json_text # JSON_TEXT ???
+      - name: logo_upload_id
+      - name: tag_group_ids
+        type: json_text # JSON_TEXT ???
   # tags: {}
   # topics: {}
   # groups: {}

@@ -4,6 +4,25 @@
  `generate_schema` script to update it.
 */
 
+CREATE TABLE categories (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  color TEXT NOT NULL,
+  created_at DATETIME NOT NULL,
+  slug TEXT NOT NULL,
+  description TEXT,
+  text_color TEXT NOT NULL,
+  read_restricted BOOLEAN NOT NULL,
+  position INTEGER,
+  parent_category_id INTEGER,
+  about_topic_title TEXT,
+  old_relative_url TEXT,
+  existing_id INTEGER,
+  permissions JSON_TEXT,
+  logo_upload_id TEXT,
+  tag_group_ids JSON_TEXT
+);
+
 CREATE TABLE users (
   id INTEGER NOT NULL PRIMARY KEY,
   username TEXT NOT NULL,
