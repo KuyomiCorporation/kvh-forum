@@ -46,7 +46,7 @@ tables:
     extend:
       - name: email
       - name: created_at
-        "null": true
+        "null": true  # TODO: Ugly fix, perhaps is_null??
       - name: staged
         "null": true
       - name: avatar_path
@@ -129,8 +129,45 @@ tables:
       - name: logo_upload_id
       - name: tag_group_ids
         type: json_text # JSON_TEXT ???
+  topics:
+    ignore:
+      - last_posted_at
+      - posts_count
+      - last_post_user_id
+      - reply_count
+      - featured_user1_id
+      - featured_user2_id
+      - featured_user3_id
+      - featured_user4_id
+      - deleted_at
+      - highest_post_number
+      - like_count
+      - incoming_link_count
+      - moderator_posts_count
+      - bumped_at
+      - has_summary
+      - archetype
+      - notify_moderators_count
+      - spam_count
+      - score
+      - percent_rank
+      - slug
+      - deleted_by_id
+      - participant_count
+      - word_count
+      - excerpt
+      - fancy_title
+      - highest_staff_post_number
+      - featured_link
+      - reviewable_score
+      - image_upload_id
+      - slow_mode_seconds
+      - bannered_until
+      - external_id
+    extend:
+      - name: old_relative_url
+      - name: private_message
   # tags: {}
-  # topics: {}
   # groups: {}
   # posts: {}
   # badges: {}

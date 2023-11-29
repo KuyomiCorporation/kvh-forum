@@ -23,6 +23,24 @@ CREATE TABLE categories (
   tag_group_ids JSON_TEXT
 );
 
+CREATE TABLE topics (
+  id INTEGER NOT NULL PRIMARY KEY,
+  title TEXT NOT NULL,
+  created_at DATETIME NOT NULL,
+  views INTEGER NOT NULL,
+  user_id INTEGER,
+  category_id INTEGER,
+  visible BOOLEAN NOT NULL,
+  closed BOOLEAN NOT NULL,
+  archived BOOLEAN NOT NULL,
+  pinned_at DATETIME,
+  subtype TEXT,
+  pinned_globally BOOLEAN NOT NULL,
+  pinned_until DATETIME,
+  old_relative_url TEXT,
+  private_message TEXT
+);
+
 CREATE TABLE users (
   id INTEGER NOT NULL PRIMARY KEY,
   username TEXT NOT NULL,
