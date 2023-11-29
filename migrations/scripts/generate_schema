@@ -218,7 +218,7 @@ module Migrations
       puts "Generating base schema file..."
 
       output_filename = File.join(__dir__, @output_directory, @output_filename)
-      File.open(output_filename, "w") { |f| f << @output_stream.string }
+      File.open(output_filename, "w") { |f| f << @output_stream.string.chomp }
     end
   end
 end

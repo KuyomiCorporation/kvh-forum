@@ -16,44 +16,79 @@ output_filename: 000_base_schema.sql
 ## indexes:     List of indexes to create
 tables:
   users:
-    primary_key: [email, username]
     ignore:
+      - seen_notification_id
+      - last_posted_at
+      - password_hash
+      - salt
+      - active
+      - last_emailed_at
+      - approved_by_id
+      - previous_visit_at
+      - suspended_at
+      - suspended_till
+      - views
+      - flag_level
+      - ip_address
+      - title
+      - uploaded_avatar_id
+      - locale
+      - primary_group_id
+      - first_seen_at
+      - silenced_till
+      - group_locked_trust_level
+      - manual_locked_trust_level
+      - secure_identifier
+      - flair_group_id
+      - last_seen_reviewable_id
       - password_algorithm
       - username_lower
-      - id
     extend:
-      - name: bio
-        type: text
       - name: email
-        type: text
-      - name: password
-        type: text
-        "null": false
-      - name: trust_level
-        type: date
+      - name: created_at
         "null": true
-    indexes:
-      - name: idx_username
-        unique: true
-        columns: [username]
-        condition:
-  tags: {}
-  topics: {}
-  categories: {}
-  groups: {}
-  posts: {}
-  badges: {}
-  uploads: {}
-  group_members:
-    virtual: true
-    primary_key: [group_id, user_id]
-    extend:
-      - name: group_id
-        type: integer
-      - name: user_id
-        type: integer
-      - name: owner
+      - name: staged
+        "null": true
+      - name: avatar_path
+      - name: avatar_url
+      - name: avatar_upload_id
+      - name: bio
+      - name: password
+        "null": true
+      - name: trust_level
+        "null": true
+      - name: suspension
+      - name: location
+      - name: website
+      - name: old_relative_url
+      - name: sso_record
+      - name: anonymized
         type: boolean
+      - name: original_username
+      - name: timezone
+      - name: email_level
+        type: integer
+      - name: email_messages_level
+        type: integer
+      - name: email_digests
+        type: boolean
+  # categories: {}
+  # tags: {}
+  # topics: {}
+  # groups: {}
+  # posts: {}
+  # badges: {}
+  # uploads: {}
+  # group_members:
+  #   virtual: true
+  #   primary_key: [group_id, user_id]
+  #   extend:
+  #     - name: group_id
+  #       type: integer
+  #     - name: user_id
+  #       type: integer
+  #     - name: owner
+  #       type: boolean
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##
