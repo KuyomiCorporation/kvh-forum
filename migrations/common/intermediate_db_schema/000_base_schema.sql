@@ -23,6 +23,26 @@ CREATE TABLE categories (
   tag_group_ids JSON_TEXT
 );
 
+CREATE TABLE posts (
+  id INTEGER NOT NULL PRIMARY KEY,
+  user_id INTEGER,
+  topic_id INTEGER NOT NULL,
+  post_number INTEGER NOT NULL,
+  raw TEXT NOT NULL,
+  created_at DATETIME NOT NULL,
+  like_count INTEGER NOT NULL,
+  reply_to_post_id TEXT,
+  original_raw TEXT,
+  upload_ids JSON_TEXT,
+  old_relative_url TEXT,
+  accepted_answer BOOLEAN,
+  small_action TEXT,
+  whisper BOOLEAN,
+  placeholders JSON_TEXT
+);
+
+CREATE INDEX posts_by_topic_post_number ON posts (topic_id, post_number);
+
 CREATE TABLE topics (
   id INTEGER NOT NULL PRIMARY KEY,
   title TEXT NOT NULL,

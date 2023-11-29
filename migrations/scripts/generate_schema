@@ -62,11 +62,9 @@ module Migrations
     end
 
     def generate_index(table_name, index)
-      index_name = index["name"]
-      column_list = index["columns"].join(" ,")
-      unique = index["unique"] ? "UNIQUE" : nil
-
-      @output_stream.puts "CREATE #{unique} INDEX #{index_name} ON #{table_name} (#{column_list});"
+      @output_stream.print "CREATE "
+      @output_stream.print "UNIQUE " if index["unique"]
+      @output_stream.puts "INDEX #{index["name"]} ON #{table_name} (#{index["columns"].join(", ")});"
     end
 
     def table(name)

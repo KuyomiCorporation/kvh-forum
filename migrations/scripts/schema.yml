@@ -167,9 +167,72 @@ tables:
     extend:
       - name: old_relative_url
       - name: private_message
+  posts:
+    ignore:
+      - cooked
+      - reply_to_post_number
+      - reply_count
+      - quote_count
+      - deleted_at
+      - off_topic_count
+      - incoming_link_count
+      - bookmark_count
+      - score
+      - reads
+      - post_type
+      - sort_order
+      - last_editor_id
+      - hidden
+      - hidden_reason_id
+      - notify_moderators_count
+      - spam_count
+      - illegal_count
+      - inappropriate_count
+      - last_version_at
+      - user_deleted
+      - reply_to_user_id
+      - percent_rank
+      - notify_user_count
+      - like_score
+      - deleted_by_id
+      - edit_reason
+      - word_count
+      - version
+      - cook_method
+      - wiki
+      - baked_at
+      - baked_version
+      - hidden_at
+      - self_edits
+      - reply_quoted
+      - via_email
+      - raw_email
+      - public_version
+      - action_code
+      - locked_by_id
+      - image_upload_id
+      - outbound_message_id
+      - qa_vote_count   # TODO: added from plugin, maybe skip these automatically for core schema?
+    extend:
+      - name: reply_to_post_id # NOTE: should this be text??
+      - name: original_raw
+      - name: upload_ids
+        type: json_text
+      - name: post_number
+        type: integer
+      - name: old_relative_url
+      - name: accepted_answer
+        type: boolean
+      - name: small_action
+      - name: whisper
+        type: boolean
+      - name: placeholders
+        type: json_text
+    indexes:
+      - name: posts_by_topic_post_number
+        columns: [topic_id, post_number]
   # tags: {}
   # groups: {}
-  # posts: {}
   # badges: {}
   # uploads: {}
   # group_members:
