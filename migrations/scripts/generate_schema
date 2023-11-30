@@ -64,7 +64,9 @@ module Migrations
     def generate_index(table_name, index)
       @output_stream.print "CREATE "
       @output_stream.print "UNIQUE " if index["unique"]
-      @output_stream.puts "INDEX #{index["name"]} ON #{table_name} (#{index["columns"].join(", ")});"
+      @output_stream.print "INDEX #{index["name"]} ON #{table_name} (#{index["columns"].join(", ")})"
+      @output_stream.print " #{index["condition"]}" if index["condition"].present?
+      @output_stream.puts ";"
     end
 
     def column_list_for(table_name)
@@ -98,13 +100,13 @@ module Migrations
             configured_primary_key.is_a?(Array) && configured_primary_key.length > 1,
           ]
         else
-          [@connection.primary_key(name), false]
+          virtual_table?(name) ? [] : [@connection.primary_key(name), false]
         end
 
       @output_stream.puts ""
       @output_stream.puts "CREATE TABLE #{name} ("
 
-      unless composite_key
+      if !composite_key && primary_key.present?
         primary_key_column = column_records.find { |c| c.name == primary_key }
 
         unless (mode == :ignore) && column_list.include?(primary_key_column.name)

@@ -101,6 +101,16 @@ CREATE TABLE uploads (
   data BLOB
 );
 
+CREATE TABLE user_field_values (
+  user_id INTEGER NOT NULL,
+  field_id INTEGER NOT NULL,
+  is_multiselect_field BOOLEAN NOT NULL,
+  value TEXT
+);
+
+CREATE UNIQUE INDEX user_field_values_multiselect ON user_field_values (user_id, field_id, value) is_multiselect_field = TRUE;
+CREATE UNIQUE INDEX user_field_values_not_multiselect ON user_field_values (user_id, field_id) is_multiselect_field = FALSE;
+
 CREATE TABLE user_fields (
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,

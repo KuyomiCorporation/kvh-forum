@@ -309,6 +309,29 @@ tables:
     ignore:
       - id
       - created_at
+  # NOTE: Perhaps use core's user_field_options instead?
+  user_field_values:
+    virtual: true
+    extend:
+      - name: user_id
+        type: integer
+        "null": false
+      - name: field_id
+        type: integer
+        "null": false
+      - name: is_multiselect_field
+        type: boolean
+        "null": false
+      - name: value
+    indexes:
+      - name: user_field_values_multiselect
+        columns: [user_id, field_id, value]
+        unique: true
+        condition: is_multiselect_field = TRUE
+      - name: user_field_values_not_multiselect
+        columns: [user_id, field_id]
+        unique: true
+        condition: is_multiselect_field = FALSE
   # tags: {}
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.
