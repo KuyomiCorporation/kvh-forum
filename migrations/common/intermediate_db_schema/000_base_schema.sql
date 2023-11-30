@@ -48,6 +48,12 @@ CREATE TABLE likes (
   PRIMARY KEY (user_id, post_id)
 );
 
+CREATE TABLE muted_users (
+  user_id INTEGER NOT NULL,
+  muted_user_id INTEGER NOT NULL,
+  PRIMARY KEY (user_id, muted_user_id)
+);
+
 CREATE TABLE posts (
   id INTEGER NOT NULL PRIMARY KEY,
   user_id INTEGER,

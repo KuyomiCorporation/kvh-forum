@@ -107,7 +107,9 @@ module Migrations
       unless composite_key
         primary_key_column = column_records.find { |c| c.name == primary_key }
 
-        @output_stream.puts "  #{primary_key_column.name} #{type(primary_key_column)} NOT NULL PRIMARY KEY,"
+        unless (mode == :ignore) && column_list.include?(primary_key_column.name)
+          @output_stream.puts "  #{primary_key_column.name} #{type(primary_key_column)} NOT NULL PRIMARY KEY,"
+        end
       end
 
       column_records.each do |column|

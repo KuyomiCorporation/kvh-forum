@@ -304,6 +304,11 @@ tables:
     extend:
       - name: options
         type: json_text
+  muted_users:
+    primary_key: [user_id, muted_user_id]
+    ignore:
+      - id
+      - created_at
   # tags: {}
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.
