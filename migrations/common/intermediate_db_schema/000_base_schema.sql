@@ -23,6 +23,13 @@ CREATE TABLE categories (
   tag_group_ids JSON_TEXT
 );
 
+CREATE TABLE group_members (
+  group_id INTEGER,
+  user_id INTEGER,
+  owner BOOLEAN,
+  PRIMARY KEY (group_id, user_id)
+);
+
 CREATE TABLE groups (
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
