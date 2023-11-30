@@ -332,7 +332,14 @@ tables:
         columns: [user_id, field_id]
         unique: true
         condition: is_multiselect_field = FALSE
-  # tags: {}
+  # TODO: allow primary key flag to be removed
+  tags:
+    include:
+      - id
+      - name
+    extend:
+      - name: tag_group_id
+        type: integer
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.

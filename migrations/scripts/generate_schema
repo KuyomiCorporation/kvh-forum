@@ -115,6 +115,7 @@ module Migrations
       end
 
       column_records.each do |column|
+        # TODO: Ensure included columns actually exist in the core db
         next if global_column_ignore_list.include?(column.name)
         next if (mode == :ignore) && column_list.include?(column.name)
         if !column.is_a?(CustomColumn) && (mode == :include) && column_list.exclude?(column.name)
