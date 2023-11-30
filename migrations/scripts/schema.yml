@@ -231,10 +231,39 @@ tables:
     indexes:
       - name: posts_by_topic_post_number
         columns: [topic_id, post_number]
+  uploads:
+    ignore:
+      - original_filename  # NOTE: Maybe allow name transforms too??
+      - filesize
+      - width
+      - height
+      - url
+      - created_at
+      - sha1
+      - origin
+      - retain_hours
+      - extension
+      - thumbnail_width
+      - thumbnail_height
+      - etag
+      - secure
+      - access_control_post_id
+      - original_sha1
+      - animated
+      - verification_status
+      - security_last_changed_at
+      - security_last_changed_reason
+      - dominant_color
+    extend:
+      - name: filename
+        "null": false
+      - name: relative_path
+      - name: type
+      - name: data
+        type: blob
   # tags: {}
   # groups: {}
   # badges: {}
-  # uploads: {}
   # group_members:
   #   virtual: true
   #   primary_key: [group_id, user_id]

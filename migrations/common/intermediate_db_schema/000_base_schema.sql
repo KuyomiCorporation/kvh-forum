@@ -61,6 +61,15 @@ CREATE TABLE topics (
   private_message TEXT
 );
 
+CREATE TABLE uploads (
+  id INTEGER NOT NULL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  filename TEXT NOT NULL,
+  relative_path TEXT,
+  type TEXT,
+  data BLOB
+);
+
 CREATE TABLE users (
   id INTEGER NOT NULL PRIMARY KEY,
   username TEXT NOT NULL,
