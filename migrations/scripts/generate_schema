@@ -67,11 +67,21 @@ module Migrations
       @output_stream.puts "INDEX #{index["name"]} ON #{table_name} (#{index["columns"].join(", ")});"
     end
 
+    def column_list_for(table_name)
+      if @table_configs.dig(table_name, "ignore").present?
+        [:ignore, column_ignore_list_for(table_name)]
+      elsif @table_configs.dig(table_name, "include").present?
+        [:include, column_include_list_for(table_name)]
+      else
+        []
+      end
+    end
+
     def table(name)
       puts "Generating #{name}..."
 
       column_records = columns(name)
-      column_ignore_list = global_column_ignore_list + column_ignore_list_for(name)
+      mode, column_list = column_list_for(name)
       indexes = indexes(name) # TODO: Allow core indexes to moved/ignored???'
       configured_primary_key = primary_key(name)
 
@@ -101,7 +111,11 @@ module Migrations
       end
 
       column_records.each do |column|
-        next if column_ignore_list.include?(column.name)
+        next if global_column_ignore_list.include?(column.name)
+        next if (mode == :ignore) && column_list.include?(column.name)
+        if !column.is_a?(CustomColumn) && (mode == :include) && column_list.exclude?(column.name)
+          next
+        end
         next if !composite_key && (column.name == primary_key)
 
         generate_column(column)
@@ -198,6 +212,10 @@ module Migrations
 
     def column_ignore_list_for(table_name)
       @table_configs.dig(table_name, "ignore") || []
+    end
+
+    def column_include_list_for(table_name)
+      @table_configs.dig(table_name, "include") || []
     end
 
     def indexes(table_name)

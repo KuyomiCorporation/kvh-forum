@@ -23,6 +23,17 @@ CREATE TABLE categories (
   tag_group_ids JSON_TEXT
 );
 
+CREATE TABLE groups (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  full_name TEXT,
+  visibility_level INTEGER NOT NULL,
+  messageable_level INTEGER,
+  mentionable_level INTEGER,
+  members_visibility_level INTEGER NOT NULL,
+  description TEXT
+);
+
 CREATE TABLE posts (
   id INTEGER NOT NULL PRIMARY KEY,
   user_id INTEGER,

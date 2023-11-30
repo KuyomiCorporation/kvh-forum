@@ -261,8 +261,18 @@ tables:
       - name: type
       - name: data
         type: blob
+  groups:
+    include:
+      - id
+      - name
+      - full_name
+      - visibility_level
+      - members_visibility_level
+      - mentionable_level
+      - messageable_level
+    extend:
+      - name: description
   # tags: {}
-  # groups: {}
   # badges: {}
   # group_members:
   #   virtual: true
