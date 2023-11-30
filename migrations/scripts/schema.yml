@@ -295,6 +295,15 @@ tables:
       - name: created_at
         type: datetime
         "null": false
+  # TODO: Pending default values & auto incrementing id column
+  user_fields:
+    ignore:
+      - created_at
+      - external_name
+      - external_type
+    extend:
+      - name: options
+        type: json_text
   # tags: {}
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.

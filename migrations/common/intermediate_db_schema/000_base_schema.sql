@@ -95,6 +95,20 @@ CREATE TABLE uploads (
   data BLOB
 );
 
+CREATE TABLE user_fields (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  field_type TEXT NOT NULL,
+  editable BOOLEAN NOT NULL,
+  description TEXT NOT NULL,
+  required BOOLEAN NOT NULL,
+  show_on_profile BOOLEAN NOT NULL,
+  position INTEGER,
+  show_on_user_card BOOLEAN NOT NULL,
+  searchable BOOLEAN NOT NULL,
+  options JSON_TEXT
+);
+
 CREATE TABLE users (
   id INTEGER NOT NULL PRIMARY KEY,
   username TEXT NOT NULL,
