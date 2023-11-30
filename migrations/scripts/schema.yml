@@ -282,6 +282,19 @@ tables:
         type: integer
       - name: owner
         type: boolean
+  likes:
+    virtual: true
+    primary_key: [user_id, post_id]
+    extend:
+      - name: post_id
+        type: integer
+        "null": false
+      - name: user_id
+        type: integer
+        "null": false
+      - name: created_at
+        type: datetime
+        "null": false
   # tags: {}
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.

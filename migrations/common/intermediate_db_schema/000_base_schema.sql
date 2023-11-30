@@ -41,6 +41,13 @@ CREATE TABLE groups (
   description TEXT
 );
 
+CREATE TABLE likes (
+  post_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at DATETIME NOT NULL,
+  PRIMARY KEY (user_id, post_id)
+);
+
 CREATE TABLE posts (
   id INTEGER NOT NULL PRIMARY KEY,
   user_id INTEGER,
