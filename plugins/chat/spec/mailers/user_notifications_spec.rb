@@ -642,7 +642,12 @@ describe UserNotifications do
               2.times do
                 msg = Fabricate(:chat_message, user: sender, chat_channel: channel)
                 notification = Fabricate(:notification)
-                Fabricate(:chat_mention, user: user, chat_message: msg, notification: notification)
+                Fabricate(
+                  :chat_mention,
+                  user: user,
+                  chat_message: msg,
+                  notifications: [notification],
+                )
               end
 
               email = described_class.chat_summary(user, {})
