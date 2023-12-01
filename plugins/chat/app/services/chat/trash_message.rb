@@ -55,6 +55,7 @@ module Chat
     end
 
     def destroy_notifications(message:, **)
+      # fixme andrei
       ids = Chat::Mention.where(chat_message: message).pluck(:notification_id)
       Notification.where(id: ids).destroy_all
       Chat::Mention.where(chat_message: message).update_all(notification_id: nil)
