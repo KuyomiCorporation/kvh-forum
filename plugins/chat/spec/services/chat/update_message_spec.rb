@@ -189,7 +189,7 @@ RSpec.describe Chat::UpdateMessage do
         )
 
         mention = user3.chat_mentions.where(chat_message: message.id).first
-        expect(mention.notification).to be_present
+        expect(mention.notifications.length).to be(1)
       end
 
       it "doesn't create mentions for already mentioned users" do
