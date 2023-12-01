@@ -271,7 +271,7 @@ RSpec.describe Chat::UpdateMessage do
         )
 
         mention = admin1.chat_mentions.where(chat_message_id: message.id).first
-        expect(mention.notification).to be_nil
+        expect(mention.notifications).to be_empty
       end
 
       it "creates a chat_mention record without notification when self mentioning" do
