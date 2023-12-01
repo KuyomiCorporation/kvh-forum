@@ -215,7 +215,7 @@ RSpec.describe Chat::UpdateMessage do
         )
 
         mention = user_without_memberships.chat_mentions.where(chat_message: chat_message).first
-        expect(mention.notification).to be_nil
+        expect(mention.notifications).to be_empty
       end
 
       it "destroys mentions that should be removed" do
@@ -282,7 +282,7 @@ RSpec.describe Chat::UpdateMessage do
 
         mention = user1.chat_mentions.where(chat_message: chat_message).first
         expect(mention).to be_present
-        expect(mention.notification).to be_nil
+        expect(mention.notifications).to be_empty
       end
 
       it "adds mentioned user and their status to the message bus message" do

@@ -55,7 +55,7 @@ RSpec.describe Chat::TrashMessage do
 
           mention = Chat::Mention.find_by(id: mention.id)
           expect(mention).to be_present
-          expect(mention.notification_id).to be_nil
+          expect(mention.notifications).to be_empty
         end
 
         it "publishes associated Discourse and MessageBus events" do
