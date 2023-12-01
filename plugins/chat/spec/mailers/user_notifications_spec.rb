@@ -379,7 +379,7 @@ describe UserNotifications do
               :chat_mention,
               user: user,
               chat_message: chat_message,
-              notification: notification,
+              notifications: [notification],
             )
           end
 
