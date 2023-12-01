@@ -257,7 +257,7 @@ describe UserNotifications do
               :chat_mention,
               user: user,
               chat_message: chat_message,
-              notification: notification,
+              notifications: [notification],
             )
           end
 
@@ -310,7 +310,7 @@ describe UserNotifications do
               :chat_mention,
               user: user,
               chat_message: another_chat_message,
-              notification: notification,
+              notifications: [notification],
             )
             another_chat_channel.update!(last_message: another_chat_message)
 
@@ -513,7 +513,7 @@ describe UserNotifications do
               :chat_mention,
               user: user,
               chat_message: new_message,
-              notification: notification,
+              notifications: [notification],
             )
 
             email = described_class.chat_summary(user, {})
@@ -700,7 +700,7 @@ describe UserNotifications do
               :chat_mention,
               user: user,
               chat_message: new_message,
-              notification: notification,
+              notifications: [notification],
             )
 
             email = described_class.chat_summary(user, {})
