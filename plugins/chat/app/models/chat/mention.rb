@@ -6,7 +6,10 @@ module Chat
 
     belongs_to :user
     belongs_to :chat_message, class_name: "Chat::Message"
-    belongs_to :notification, dependent: :destroy
+    has_many :notification,
+             -> { for_chat_mentions },
+             foreign_key: :reference_id,
+             dependent: :destroy
   end
 end
 
