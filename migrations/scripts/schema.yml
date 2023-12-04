@@ -15,6 +15,34 @@ output_filename: 000_base_schema.sql
 ##              or transform an existing one
 ## indexes:     List of indexes to create
 tables:
+  schema_migrations:
+    virtual: true
+    primary_key: path
+    extend:
+      - name: path
+        "null": false
+      - name: created_at
+        type: datetime
+  config:
+    virtual: true
+    primary_key: name
+    extend:
+      - name: name
+        "null": false
+      - name: value
+        "null": false
+  log_entries:
+    virtual: true
+    extend:
+      - name: created_at
+        type: datetime
+        "null": false
+      - name: type
+        "null": false
+      - name: message
+        "null": false
+      - name: exception
+      - name: details
   users:
     ignore:
       - seen_notification_id

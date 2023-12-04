@@ -43,6 +43,11 @@ CREATE TABLE category_custom_fields (
   PRIMARY KEY (category_id, name)
 );
 
+CREATE TABLE config (
+  name TEXT NOT NULL PRIMARY KEY,
+  value TEXT NOT NULL
+);
+
 CREATE TABLE group_members (
   group_id INTEGER,
   user_id INTEGER,
@@ -66,6 +71,14 @@ CREATE TABLE likes (
   user_id INTEGER NOT NULL,
   created_at DATETIME NOT NULL,
   PRIMARY KEY (user_id, post_id)
+);
+
+CREATE TABLE log_entries (
+  created_at DATETIME NOT NULL,
+  type TEXT NOT NULL,
+  message TEXT NOT NULL,
+  exception TEXT,
+  details TEXT
 );
 
 CREATE TABLE muted_users (
@@ -138,6 +151,11 @@ CREATE TABLE posts (
 );
 
 CREATE INDEX posts_by_topic_post_number ON posts (topic_id, post_number);
+
+CREATE TABLE schema_migrations (
+  path TEXT NOT NULL PRIMARY KEY,
+  created_at DATETIME
+);
 
 CREATE TABLE site_settings (
   name TEXT NOT NULL,
