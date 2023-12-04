@@ -75,7 +75,7 @@ module Migrations
       elsif @table_configs.dig(table_name, "include").present?
         [:include, column_include_list_for(table_name)]
       else
-        []
+        [:ignore, []]
       end
     end
 

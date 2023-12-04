@@ -375,6 +375,16 @@ tables:
       - user_id
       - badge_id
       - granted_at
+  topic_users:
+    primary_key: [user_id, topic_id]
+    ignore:
+      - id
+      - posted
+      - cleared_pinned_at
+      - last_emailed_post_number
+      - liked
+      - bookmarked
+      - last_posted_at
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

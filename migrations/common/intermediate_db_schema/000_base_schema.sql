@@ -111,6 +111,19 @@ CREATE TABLE topic_tags (
   PRIMARY KEY (topic_id, tag_id)
 );
 
+CREATE TABLE topic_users (
+  user_id INTEGER NOT NULL,
+  topic_id INTEGER NOT NULL,
+  last_read_post_number INTEGER,
+  last_visited_at DATETIME,
+  first_visited_at DATETIME,
+  notification_level INTEGER NOT NULL,
+  notifications_changed_at DATETIME,
+  notifications_reason_id INTEGER,
+  total_msecs_viewed INTEGER NOT NULL,
+  PRIMARY KEY (user_id, topic_id)
+);
+
 CREATE TABLE topics (
   id INTEGER NOT NULL PRIMARY KEY,
   title TEXT NOT NULL,
