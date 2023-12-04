@@ -78,6 +78,13 @@ CREATE TABLE permalink_normalizations (
   normalization TEXT NOT NULL PRIMARY KEY
 );
 
+CREATE TABLE post_custom_fields (
+  post_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  value TEXT,
+  PRIMARY KEY (post_id, name)
+);
+
 CREATE TABLE posts (
   id INTEGER NOT NULL PRIMARY KEY,
   user_id INTEGER,

@@ -402,6 +402,11 @@ tables:
     ignore:
       - id
       - created_at
+  post_custom_fields:
+    primary_key: [post_id, name]
+    ignore:
+      - id
+      - created_at
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##
