@@ -422,6 +422,16 @@ tables:
         type: integer
       - name: created_at
         "null": true
+  poll_votes:
+    primary_key: [poll_option_id, user_id]
+    ignore: [poll_id]
+    extend:
+      - name: created_at
+        "null": true
+      - name: poll_option_id
+        "null": false
+      - name: user_id
+        "null": false
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

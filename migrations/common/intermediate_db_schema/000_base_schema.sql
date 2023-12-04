@@ -86,6 +86,13 @@ CREATE TABLE poll_options (
   position INTEGER
 );
 
+CREATE TABLE poll_votes (
+  poll_option_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at DATETIME,
+  PRIMARY KEY (poll_option_id, user_id)
+);
+
 CREATE TABLE polls (
   id INTEGER NOT NULL PRIMARY KEY,
   post_id INTEGER,
