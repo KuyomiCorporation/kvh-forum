@@ -4,6 +4,19 @@
  `generate_schema` script to update it.
 */
 
+CREATE TABLE badges (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  badge_type_id INTEGER NOT NULL,
+  created_at DATETIME NOT NULL,
+  multiple_grant BOOLEAN NOT NULL,
+  query TEXT,
+  long_description TEXT,
+  image_upload_id INTEGER,
+  bage_group TEXT
+);
+
 CREATE TABLE categories (
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,

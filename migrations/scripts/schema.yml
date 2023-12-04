@@ -354,7 +354,22 @@ tables:
     ignore:
       - id
       - created_at
-  # badges: {}
+  badges:
+    ignore:
+      - grant_count
+      - allow_title
+      - icon
+      - listable
+      - target_posts
+      - enabled
+      - auto_revoke
+      - trigger
+      - show_posts
+      - system
+      - image
+      - badge_grouping_id
+    extend:
+      - name: bage_group
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##
