@@ -51,7 +51,6 @@ class Notification < ActiveRecord::Base
         ->(user_id, limit: 30) do
           where(user_id: user_id).visible.prioritized.includes(:topic).limit(limit)
         end
-  scope :for_chat_mentions, -> { where(notification_type: types[:chat_mention]) }
 
   attr_accessor :skip_send_email
 

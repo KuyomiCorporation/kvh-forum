@@ -7,7 +7,7 @@ module Chat
     belongs_to :user
     belongs_to :chat_message, class_name: "Chat::Message"
     has_many :notifications,
-             -> { for_chat_mentions },
+             -> { where notification_type: Notification.types[:chat_mention] },
              foreign_key: :reference_id,
              dependent: :destroy
   end
