@@ -397,6 +397,11 @@ tables:
       - value
     extend:
       - name: action
+  category_custom_fields:
+    primary_key: [category_id, name]
+    ignore:
+      - id
+      - created_at
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

@@ -36,6 +36,13 @@ CREATE TABLE categories (
   tag_group_ids JSON_TEXT
 );
 
+CREATE TABLE category_custom_fields (
+  category_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  value TEXT,
+  PRIMARY KEY (category_id, name)
+);
+
 CREATE TABLE group_members (
   group_id INTEGER,
   user_id INTEGER,
