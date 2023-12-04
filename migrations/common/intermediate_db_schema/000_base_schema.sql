@@ -74,6 +74,11 @@ CREATE TABLE posts (
 
 CREATE INDEX posts_by_topic_post_number ON posts (topic_id, post_number);
 
+CREATE TABLE tag_groups (
+  id INTEGER NOT NULL PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
 CREATE TABLE tags (
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,

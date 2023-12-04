@@ -340,6 +340,10 @@ tables:
     extend:
       - name: tag_group_id
         type: integer
+  tag_groups:
+    include:
+      - id
+      - name
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
