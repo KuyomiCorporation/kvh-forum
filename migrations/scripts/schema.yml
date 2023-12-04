@@ -349,6 +349,11 @@ tables:
     ignore:
       - id
       - created_at
+  tag_users:
+    primary_key: [tag_id, user_id]
+    ignore:
+      - id
+      - created_at
   # badges: {}
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.

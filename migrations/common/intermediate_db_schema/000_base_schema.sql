@@ -79,6 +79,13 @@ CREATE TABLE tag_groups (
   name TEXT NOT NULL
 );
 
+CREATE TABLE tag_users (
+  tag_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  notification_level INTEGER NOT NULL,
+  PRIMARY KEY (tag_id, user_id)
+);
+
 CREATE TABLE tags (
   id INTEGER NOT NULL PRIMARY KEY,
   name TEXT NOT NULL,
