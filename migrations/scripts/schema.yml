@@ -408,6 +408,20 @@ tables:
       - id
       - created_at
   polls: {}
+  poll_options:
+    ignore:
+      - digest
+      - html
+      - anonymous_votes
+    extend:
+      - name: poll_id
+        "null": false
+      - name: text
+        "null": false
+      - name: position
+        type: integer
+      - name: created_at
+        "null": true
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

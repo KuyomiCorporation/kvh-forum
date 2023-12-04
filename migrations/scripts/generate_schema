@@ -155,7 +155,7 @@ module Migrations
       end
 
       def merge!(other_column)
-        @raw_null ||= other_column.null
+        @raw_null = other_column.null if @raw_null.nil?
         @raw_type ||= other_column.type
 
         self

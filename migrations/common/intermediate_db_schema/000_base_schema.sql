@@ -78,6 +78,14 @@ CREATE TABLE permalink_normalizations (
   normalization TEXT NOT NULL PRIMARY KEY
 );
 
+CREATE TABLE poll_options (
+  id INTEGER NOT NULL PRIMARY KEY,
+  poll_id INTEGER NOT NULL,
+  created_at DATETIME,
+  text TEXT NOT NULL,
+  position INTEGER
+);
+
 CREATE TABLE polls (
   id INTEGER NOT NULL PRIMARY KEY,
   post_id INTEGER,
