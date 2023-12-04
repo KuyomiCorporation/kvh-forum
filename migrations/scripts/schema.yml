@@ -385,6 +385,12 @@ tables:
       - liked
       - bookmarked
       - last_posted_at
+  permalink_normalizations:
+    virtual: true
+    primary_key: normalization
+    extend:
+      - name: normalization
+        "null": false
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

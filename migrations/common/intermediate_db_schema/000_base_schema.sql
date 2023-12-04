@@ -67,6 +67,10 @@ CREATE TABLE muted_users (
   PRIMARY KEY (user_id, muted_user_id)
 );
 
+CREATE TABLE permalink_normalizations (
+  normalization TEXT NOT NULL PRIMARY KEY
+);
+
 CREATE TABLE posts (
   id INTEGER NOT NULL PRIMARY KEY,
   user_id INTEGER,
