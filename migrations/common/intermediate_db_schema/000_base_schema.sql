@@ -78,6 +78,25 @@ CREATE TABLE permalink_normalizations (
   normalization TEXT NOT NULL PRIMARY KEY
 );
 
+CREATE TABLE polls (
+  id INTEGER NOT NULL PRIMARY KEY,
+  post_id INTEGER,
+  name TEXT NOT NULL,
+  close_at DATETIME,
+  type INTEGER NOT NULL,
+  status INTEGER NOT NULL,
+  results INTEGER NOT NULL,
+  visibility INTEGER NOT NULL,
+  min INTEGER,
+  max INTEGER,
+  step INTEGER,
+  anonymous_voters INTEGER,
+  created_at DATETIME NOT NULL,
+  chart_type INTEGER NOT NULL,
+  groups TEXT,
+  title TEXT
+);
+
 CREATE TABLE post_custom_fields (
   post_id INTEGER NOT NULL,
   name TEXT NOT NULL,
