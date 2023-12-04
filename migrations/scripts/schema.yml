@@ -391,6 +391,12 @@ tables:
     extend:
       - name: normalization
         "null": false
+  site_settings:
+    include:
+      - name
+      - value
+    extend:
+      - name: action
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##
