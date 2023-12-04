@@ -138,6 +138,12 @@ CREATE TABLE uploads (
   data BLOB
 );
 
+CREATE TABLE user_badges (
+  badge_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  granted_at DATETIME NOT NULL
+);
+
 CREATE TABLE user_field_values (
   user_id INTEGER NOT NULL,
   field_id INTEGER NOT NULL,

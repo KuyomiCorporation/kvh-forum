@@ -370,6 +370,11 @@ tables:
       - badge_grouping_id
     extend:
       - name: bage_group
+  user_badges:
+    include:
+      - user_id
+      - badge_id
+      - granted_at
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##
