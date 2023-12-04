@@ -85,6 +85,12 @@ CREATE TABLE tags (
   tag_group_id INTEGER
 );
 
+CREATE TABLE topic_tags (
+  topic_id INTEGER NOT NULL,
+  tag_id INTEGER NOT NULL,
+  PRIMARY KEY (topic_id, tag_id)
+);
+
 CREATE TABLE topics (
   id INTEGER NOT NULL PRIMARY KEY,
   title TEXT NOT NULL,
