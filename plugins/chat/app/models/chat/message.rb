@@ -294,7 +294,9 @@ module Chat
         .find_each do |user|
           mentions << {
             chat_message_id: self.id,
+            mention_type: Chat::Mention.types[:user],
             user_id: user.id,
+            target_id: user.id,
             created_at: now,
             updated_at: now,
           }
