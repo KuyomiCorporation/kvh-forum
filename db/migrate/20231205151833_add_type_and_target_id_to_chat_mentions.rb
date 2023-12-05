@@ -3,7 +3,7 @@
 class AddTypeAndTargetIdToChatMentions < ActiveRecord::Migration[7.0]
   def up
     change_column :chat_mentions, :user_id, :integer, null: true
-    add_column :chat_mentions, :type, :integer, null: true
+    add_column :chat_mentions, :mention_type, :integer, null: true
     add_column :chat_mentions, :target_id, :integer, null: true
 
     DB.exec <<~SQL
@@ -18,7 +18,7 @@ class AddTypeAndTargetIdToChatMentions < ActiveRecord::Migration[7.0]
 
   def down
     change_column :chat_mentions, :user_id, :integer, null: false
-    remove_column :chat_mentions, :type
+    remove_column :chat_mentions, :mention_type
     remove_column :chat_mentions, :target_id
   end
 end
