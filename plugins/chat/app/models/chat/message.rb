@@ -249,6 +249,7 @@ module Chat
 
     def upsert_mentions
       mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
+      # fixme andrei using the old column here wasn't caught by tests
       old_mentions = chat_mentions.pluck(:user_id)
 
       mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
