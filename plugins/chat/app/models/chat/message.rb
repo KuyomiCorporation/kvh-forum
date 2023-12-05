@@ -290,6 +290,7 @@ module Chat
 
       now = Time.zone.now
       mentions = []
+      # fixme andrei make sure to stop using the user_id column here
       User
         .where(id: user_ids)
         .find_each do |user|
