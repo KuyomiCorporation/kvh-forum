@@ -26,7 +26,7 @@ end
 #  user_id         :integer          not null
 #  notification_id :integer          not null
 #  target_id       :integer
-#  type            :integer          not null
+#  mention_type    :integer          not null
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
