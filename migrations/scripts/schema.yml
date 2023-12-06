@@ -20,7 +20,7 @@ tables:
     primary_key: path
     extend:
       - name: path
-        "null": false
+        is_null: false
       - name: created_at
         type: datetime
   config:
@@ -28,19 +28,19 @@ tables:
     primary_key: name
     extend:
       - name: name
-        "null": false
+        is_null: false
       - name: value
-        "null": false
+        is_null: false
   log_entries:
     virtual: true
     extend:
       - name: created_at
         type: datetime
-        "null": false
+        is_null: false
       - name: type
-        "null": false
+        is_null: false
       - name: message
-        "null": false
+        is_null: false
       - name: exception
       - name: details
   users:
@@ -74,17 +74,17 @@ tables:
     extend:
       - name: email
       - name: created_at
-        "null": true  # TODO: Ugly fix, perhaps is_null??
+        is_null: true
       - name: staged
-        "null": true
+        is_null: true
       - name: avatar_path
       - name: avatar_url
       - name: avatar_upload_id
       - name: bio
       - name: password
-        "null": true
+        is_null: true
       - name: trust_level
-        "null": true
+        is_null: true
       - name: suspension
       - name: location
       - name: website
@@ -284,7 +284,7 @@ tables:
       - dominant_color
     extend:
       - name: filename
-        "null": false
+        is_null: false
       - name: relative_path
       - name: type
       - name: data
@@ -316,13 +316,13 @@ tables:
     extend:
       - name: post_id
         type: integer
-        "null": false
+        is_null: false
       - name: user_id
         type: integer
-        "null": false
+        is_null: false
       - name: created_at
         type: datetime
-        "null": false
+        is_null: false
   # TODO: Pending default values & auto incrementing id column
   user_fields:
     ignore:
@@ -343,13 +343,13 @@ tables:
     extend:
       - name: user_id
         type: integer
-        "null": false
+        is_null: false
       - name: field_id
         type: integer
-        "null": false
+        is_null: false
       - name: is_multiselect_field
         type: boolean
-        "null": false
+        is_null: false
       - name: value
     indexes:
       - name: user_field_values_multiselect
@@ -418,7 +418,7 @@ tables:
     primary_key: normalization
     extend:
       - name: normalization
-        "null": false
+        is_null: false
   site_settings:
     include:
       - name
@@ -443,23 +443,23 @@ tables:
       - anonymous_votes
     extend:
       - name: poll_id
-        "null": false
+        is_null: false
       - name: text
-        "null": false
+        is_null: false
       - name: position
         type: integer
       - name: created_at
-        "null": true
+        is_null: true
   poll_votes:
     primary_key: [poll_option_id, user_id]
     ignore: [poll_id]
     extend:
       - name: created_at
-        "null": true
+        is_null: true
       - name: poll_option_id
-        "null": false
+        is_null: false
       - name: user_id
-        "null": false
+        is_null: false
 ## Schema-wide column configuration options. These options apply to all tables.
 ## See table specific column configuration options above.
 ##

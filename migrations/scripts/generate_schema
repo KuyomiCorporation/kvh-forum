@@ -17,6 +17,8 @@ module Migrations
 
       @table_configs = config["tables"]
       @column_configs = config["columns"]
+
+      @skipped_columns = {}
     end
 
     def self.run
@@ -30,6 +32,7 @@ module Migrations
     def run
       header
       tables
+      trailer
       save
     end
 
@@ -53,6 +56,25 @@ module Migrations
 
         table(name)
       end
+    end
+
+    def trailer
+      puts "Generating skipped columns list..."
+
+      @output_stream.print "\n\n/*"
+
+      @skipped_columns.each_with_index do |(table_name, columns), index|
+        next if virtual_table?(table_name) || columns.blank?
+
+        @output_stream.puts "" unless index.zero?
+        @output_stream.puts "Table: #{table_name}"
+        @output_stream.puts "--------#{"-" * table_name.length}"
+        columns.each do |column|
+          @output_stream.puts " #{column.name} #{column.type} #{column.null}"
+        end
+      end
+
+      @output_stream.puts "*/"
     end
 
     def generate_column(column)
@@ -115,11 +137,15 @@ module Migrations
         end
       end
 
+      @skipped_columns[name] = []
+
       column_records.each do |column|
         # TODO: Ensure included columns actually exist in the core db
         next if global_column_ignore_list.include?(column.name)
         next if (mode == :ignore) && column_list.include?(column.name)
         if !column.is_a?(CustomColumn) && (mode == :include) && column_list.exclude?(column.name)
+          @skipped_columns[name] << column
+
           next
         end
         next if !composite_key && (column.name == primary_key)
@@ -128,10 +154,8 @@ module Migrations
       end
 
       @output_stream.puts "  PRIMARY KEY (#{primary_key.join(", ")})," if composite_key
-
       @output_stream.seek(@output_stream.pos - 2) # Remove last new line & trailing comma
       @output_stream.puts "\n);"
-
       @output_stream.puts "" if indexes.present?
 
       indexes.each { |index| generate_index(name, index) }
@@ -192,7 +216,9 @@ module Migrations
 
       return [] if extensions.nil?
 
-      extensions.map { |column| CustomColumn.new(column["name"], column["type"], column["null"]) }
+      extensions.map do |column|
+        CustomColumn.new(column["name"], column["type"], column["is_null"])
+      end
     end
 
     def type(column)

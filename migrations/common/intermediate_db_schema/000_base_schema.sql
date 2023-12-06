@@ -289,3 +289,84 @@ CREATE TABLE users (
   email_messages_level INTEGER,
   email_digests BOOLEAN
 );
+
+
+/*
+Table: groups
+--------------
+ created_at datetime false
+ automatic boolean false
+ user_count integer false
+ automatic_membership_email_domains text true
+ primary_group boolean false
+ title string true
+ grant_trust_level integer true
+ incoming_email string true
+ has_messages boolean false
+ flair_bg_color string true
+ flair_color string true
+ bio_raw text true
+ bio_cooked text true
+ allow_membership_requests boolean false
+ default_notification_level integer false
+ public_exit boolean false
+ public_admission boolean false
+ membership_request_template text true
+ smtp_server string true
+ smtp_port integer true
+ smtp_ssl boolean true
+ imap_server string true
+ imap_port integer true
+ imap_ssl boolean true
+ imap_mailbox_name string false
+ imap_uid_validity integer false
+ imap_last_uid integer false
+ email_username string true
+ email_password string true
+ publish_read_state boolean false
+ imap_last_error text true
+ imap_old_emails integer true
+ imap_new_emails integer true
+ flair_icon string true
+ flair_upload_id integer true
+ allow_unknown_sender_topic_replies boolean false
+ smtp_enabled boolean true
+ smtp_updated_at datetime true
+ smtp_updated_by_id integer true
+ imap_enabled boolean true
+ imap_updated_at datetime true
+ imap_updated_by_id integer true
+ email_from_alias string true
+
+Table: site_settings
+---------------------
+ id integer false
+ data_type integer false
+ created_at datetime false
+
+Table: tag_groups
+------------------
+ created_at datetime false
+ parent_tag_id integer true
+ one_per_topic boolean true
+
+Table: tags
+------------
+ created_at datetime false
+ pm_topic_count integer false
+ target_tag_id integer true
+ description string true
+ public_topic_count integer false
+ staff_topic_count integer false
+
+Table: user_badges
+-------------------
+ id integer false
+ granted_by_id integer false
+ post_id integer true
+ notification_id integer true
+ seq integer false
+ featured_rank integer true
+ created_at datetime false
+ is_favorite boolean true
+*/
