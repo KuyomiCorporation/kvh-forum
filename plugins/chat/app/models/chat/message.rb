@@ -64,6 +64,10 @@ module Chat
             dependent: :destroy,
             class_name: "Chat::AllMention",
             foreign_key: :chat_message_id
+    has_one :here_mention,
+            dependent: :destroy,
+            class_name: "Chat::HereMention",
+            foreign_key: :chat_message_id
 
     scope :in_public_channel,
           -> do
@@ -268,7 +272,9 @@ module Chat
         AllMention.create!(chat_message_id: self.id)
       end
 
-      # fixme andrei make sure we create here mentions too
+      if parsed_mentions.has_here_mention && here_mention.blank?
+        HereMention.create!(chat_message_id: self.id)
+      end
     end
 
     def in_thread?
