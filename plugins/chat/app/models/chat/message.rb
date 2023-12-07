@@ -339,7 +339,7 @@ module Chat
     end
 
     def upsert_user_mentions
-      mentioned_user_ids = parsed_mentions.all_mentioned_users_ids
+      mentioned_user_ids = parsed_mentions.direct_mentions.pluck(:id)
       old_mentions = user_mentions.pluck(:target_id)
 
       mentioned_user_ids_to_drop = old_mentions - mentioned_user_ids
