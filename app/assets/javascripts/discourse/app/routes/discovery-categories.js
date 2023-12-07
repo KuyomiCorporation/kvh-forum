@@ -85,7 +85,7 @@ export default class DiscoveryCategoriesRoute extends DiscourseRoute {
       topicsList: PreloadStore.getAndRemove("topic_list"),
     });
 
-    if (result.categoriesList.category_list && result.topicsList.topic_list) {
+    if (result.categoriesList?.category_list && result.topicsList?.topic_list) {
       result = { ...result.categoriesList, ...result.topicsList };
     } else {
       // Otherwise, return the ajax result
