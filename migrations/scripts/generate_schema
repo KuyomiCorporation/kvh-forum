@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# Generate the converter's base intermediate database migration file from
+# the core database state and YAML configuration in schema.yml
+
 puts "Loading application..."
 require_relative "../../config/environment"
 
@@ -9,36 +12,38 @@ module Migrations
     def initialize(opts = {})
       config = YAML.load_file(File.join(__dir__, "schema.yml"))
 
-      @connection = ActiveRecord::Base.connection
+      @core_db_connection = ActiveRecord::Base.connection
       @output_stream = StringIO.new
+      @indirectly_ignored_columns = Hash.new { |h, k| h[k] = [] }
 
       @output_directory = config["output_directory"]
       @output_filename = config["output_filename"]
-
+      @output_file_path = opts[:output_file_path]
       @table_configs = config["tables"]
       @column_configs = config["columns"]
 
-      @skipped_columns = {}
+      @configured_table_names = @table_configs&.keys&.sort || []
+      @global_column_ignore_list = @column_configs["ignore"] || []
     end
 
-    def self.run
+    def self.run(file_path = nil)
       puts "Generating base migration schema for Discourse #{Discourse::VERSION::STRING}"
 
-      self.new.run
+      self.new(output_file_path: file_path).run
 
       puts "", "Done"
     end
 
     def run
-      header
-      tables
-      trailer
+      generate_header
+      generate_tables
+      generate_indirectly_ignored_columns_log
       save
     end
 
     private
 
-    def header
+    def generate_header
       @output_stream.puts <<~HEADER
          /*
          This file is auto-generated from the current state of the Discourse core database schema. Instead
@@ -48,22 +53,22 @@ module Migrations
       HEADER
     end
 
-    def tables
+    def generate_tables
       puts "Generating tables..."
 
-      configured_table_names.each do |name|
+      @configured_table_names.each do |name|
         raise "Core table named '#{name}' not found" unless valid_table?(name)
 
         table(name)
       end
     end
 
-    def trailer
-      puts "Generating skipped columns list..."
+    def generate_indirectly_ignored_columns_log
+      puts "Generating indirectly ignored column list..."
 
-      @output_stream.print "\n\n/*"
+      @output_stream.puts "\n\n/*"
 
-      @skipped_columns.each_with_index do |(table_name, columns), index|
+      @indirectly_ignored_columns.each_with_index do |(table_name, columns), index|
         next if virtual_table?(table_name) || columns.blank?
 
         @output_stream.puts "" unless index.zero?
@@ -93,9 +98,13 @@ module Migrations
 
     def column_list_for(table_name)
       if @table_configs.dig(table_name, "ignore").present?
-        [:ignore, column_ignore_list_for(table_name)]
+        columns = @table_configs.dig(table_name, "ignore") || []
+
+        [:ignore, columns]
       elsif @table_configs.dig(table_name, "include").present?
-        [:include, column_include_list_for(table_name)]
+        columns = @table_configs.dig(table_name, "include") || []
+
+        [:include, columns]
       else
         [:ignore, []]
       end
@@ -122,7 +131,7 @@ module Migrations
             configured_primary_key.is_a?(Array) && configured_primary_key.length > 1,
           ]
         else
-          virtual_table?(name) ? [] : [@connection.primary_key(name), false]
+          virtual_table?(name) ? [] : [@core_db_connection.primary_key(name), false]
         end
 
       @output_stream.puts ""
@@ -137,14 +146,12 @@ module Migrations
         end
       end
 
-      @skipped_columns[name] = []
-
       column_records.each do |column|
         # TODO: Ensure included columns actually exist in the core db
-        next if global_column_ignore_list.include?(column.name)
+        next if @global_column_ignore_list.include?(column.name)
         next if (mode == :ignore) && column_list.include?(column.name)
         if !column.is_a?(CustomColumn) && (mode == :include) && column_list.exclude?(column.name)
-          @skipped_columns[name] << column
+          @indirectly_ignored_columns[name] << column
 
           next
         end
@@ -191,7 +198,7 @@ module Migrations
 
       return extensions if virtual_table?(name)
 
-      default_columns = @connection.columns(name)
+      default_columns = @core_db_connection.columns(name)
 
       return default_columns if extensions.blank?
 
@@ -231,23 +238,11 @@ module Migrations
     end
 
     def valid_table?(name)
-      @connection.tables.include?(name) || virtual_table?(name)
+      @core_db_connection.tables.include?(name) || virtual_table?(name)
     end
 
     def virtual_table?(name)
       !!@table_configs.dig(name, "virtual")
-    end
-
-    def global_column_ignore_list
-      @column_configs["ignore"] || []
-    end
-
-    def column_ignore_list_for(table_name)
-      @table_configs.dig(table_name, "ignore") || []
-    end
-
-    def column_include_list_for(table_name)
-      @table_configs.dig(table_name, "include") || []
     end
 
     def indexes(table_name)
@@ -258,17 +253,13 @@ module Migrations
       @table_configs.dig(table_name, "primary_key")
     end
 
-    def configured_table_names
-      @configured_table_names ||= @table_configs&.keys&.sort || []
-    end
-
     def save
       puts "Generating base schema file..."
 
-      output_filename = File.join(__dir__, @output_directory, @output_filename)
+      output_filename = @output_file_path || File.join(__dir__, @output_directory, @output_filename)
       File.open(output_filename, "w") { |f| f << @output_stream.string.chomp }
     end
   end
 end
 
-Migrations::GenerateSchema.run
+Migrations::GenerateSchema.run(ARGV[0])
