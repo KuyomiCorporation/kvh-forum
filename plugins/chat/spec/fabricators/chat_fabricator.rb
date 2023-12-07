@@ -129,6 +129,10 @@ Fabricator(:group_chat_mention, class_name: "Chat::GroupMention") do
   group { Fabricate(:group) }
 end
 
+Fabricator(:all_chat_mention, class_name: "Chat::AllMention") do
+  chat_message { Fabricate(:chat_message) }
+end
+
 Fabricator(:chat_message_reaction, class_name: "Chat::MessageReaction") do
   chat_message { Fabricate(:chat_message) }
   user { Fabricate(:user) }
